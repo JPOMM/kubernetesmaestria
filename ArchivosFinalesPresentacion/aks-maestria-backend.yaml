@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: deployment-maestria-backend-aks
+   labels:
+      app: deployservice
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: deployservice
+   template:
+      metadata:
+         labels:
+            app: deployservice
+      spec:
+         containers:
+         - name: backend
+           image: docker.io/cesarch94/flask_bootstrap_ms_demo:backend2
+           ports:
+           - containerPort: 6666
+---
+apiVersion: v1
+kind: Service
+metadata:
+   name: service-maestria-backend-aks
+   annotations:
+      service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+   labels:
+      run: service-maestria-backend-aks
+spec:
+   type: LoadBalancer
+   ports:
+   - port: 6666
+     protocol: TCP
+   selector:
+      app: deployservice
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: webserver-hpa-maestria-aks
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name: deployment-maestria-backend-aks
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 60

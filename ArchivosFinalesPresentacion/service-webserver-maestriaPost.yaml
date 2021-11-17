@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+   name: service-maestria-backend
+   labels:
+      run: service-maestria-backend
+spec:
+   type: LoadBalancer
+   ports:
+   - port: 7777
+     protocol: TCP
+   selector:
+      app: deployservice

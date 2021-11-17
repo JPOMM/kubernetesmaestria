@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+   name: deployment-maestria-backend
+   labels:
+      app: deployservice
+spec:
+   replicas: 1
+   selector:
+      matchLabels:
+         app: deployservice
+   template:
+      metadata:
+         labels:
+            app: deployservice
+      spec:
+         containers:
+         - name: backend
+           image: docker.io/cesarch94/flask_bootstrap_ms_demo:backend2
+           ports:
+           - containerPort: 7777
